@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>產品後台</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/配色.css">
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+<div class="container mt-3">
+    <section class="d-flex justify-content-end">
+        <span class="text-warning fs-3 fw-500 me-auto" id="login_member"></span>
+        <a href="tmpindex.html" class="btn btn-success m-2 my-auto" id="">首頁</a>
+        <a href="Member_back.html" class="btn btn-success m-2 my-auto" id="mem_backend">會員後台</a>
+        <a href="OrderSub_backend.html" class="btn btn-success m-2 my-auto" id="order_backend">訂單後台</a>
+        <a href="" class="btn btn-success m-2 my-auto ms-2" id="logout">登出</a>
+    </section>
+
+    <h1 class="text-info">產品總覽</h1>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+        <tr class="text-nowrap">
+            <td>產品編號</td>
+            <td>名稱</td>
+            <!--            <td>產品圖片</td>-->
+            <td>產品介紹</td>
+            <td>單價</td>
+            <td>上架日期</td>
+            <td class="text-center">
+                <button class="btn btn-warning" id="creat_btn" data-bs-toggle="modal" data-bs-target="#exampleModal_2">
+                    新增
+                </button>
+            </td>
+        </tr>
+        </thead>
+        <tbody id="show">
+        <!-- <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="text-center">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                    id="update_btn" data-id="" data-p_name=""  data-p_img=""  data-p_info="" data-p_price="">修改</button>
+                <button class="btn btn-danger" data-id=""
+                    id="delete_my_btn">刪除</button>
+            </td>
+        </tr> -->
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">修改產品</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="id">產品編號</label>
+                <input type="text" id="id" name="" class="form-control mb-2" placeholder="" disabled>
+
+
+                <label for="p_name">名稱</label>
+                <input type="text" id="p_name" name="" class="form-control mb-2" placeholder="">
+
+
+                <!--                <label for="p_img">產品圖片</label>-->
+                <input type="hidden" id="p_img" name="" class="form-control mb-2" placeholder="">
+
+
+                <label for="p_info">產品介紹</label>
+                <input type="text" id="p_info" name="" class="form-control mb-2">
+
+                <div>
+                    <label for="p_price">單價</label>
+                    <input type="number" id="p_price" name="" class="form-control mb-2"
+                           placeholder="請輸入數字1~100" min="1" max="100">
+                    <div class="valid-feedback"></div>
+                    <div class="invalid-feedback">價格異常</div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="m_btn">確定</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal_2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">新增產品</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="p_name">名稱</label>
+                <input type="text" id="add_p_name" name="" class="form-control mb-2" placeholder="">
+
+
+                <!--                <label for="p_img">產品圖片</label>-->
+                <input type="hidden" id="add_p_img" name="" class="form-control mb-2" placeholder="">
+
+
+                <label for="p_info">產品介紹</label>
+                <input type="text" id="add_p_info" name="" class="form-control mb-2">
+
+
+                <div>
+                    <label for="add_p_price">單價</label>
+                    <input type="number" id="add_p_price" name="" class="form-control mb-2"
+                           placeholder="請輸入數字1~100" min="1" max="100">
+                    <div class="valid-feedback"></div>
+                    <div class="invalid-feedback">價格異常</div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="m2_btn">確定</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        let id;
+        if (getCookie("UID01") == "" && getCookie("UID02") == "") {
+
+            alert("您沒有權限，請登入");
+            location.href = "tmpindex.html";
+            return;
+        }
+
+        var jsonData = {};
+        jsonData.uid01 = getCookie("UID01");
+        jsonData.uid02 = getCookie("UID02");
+        $.ajax({
+            type: "POST",
+            url: "http://localhost/tea/Member/checkUid",
+            dataType: "json",
+            data: JSON.stringify(jsonData),
+            async: false,
+            success: uid_check,
+            error: function () {
+                alert("error-Member-checkUid");
+            }
+        });
+
+        function uid_check(data) {
+            let flag_price = true;
+
+            if (!data.state || data.data.userType != 100) {
+                alert("您沒有權限，請登入");
+                location.href = "tmpindex.html";
+                return;
+            }
+
+            $("#login_member").text(data.data.username + "管理員您好!");
+            $.ajax({
+                type: "GET",
+                url: "http://localhost/tea/Product/selectAll",
+                dataType: "json",
+                async: false,
+                success: showdata,
+                error: function () {
+                    console.log("error-Product-selectAll");
+                }
+            });
+
+            function showdata(data) {
+                for (var i = 0; i < data.length; i++) {
+                    var str = '<tr><td>' + data[i].id + '</td><td>' + data[i].name + '</td><td>' + data[i].information + '</td><td>' + data[i].price + '</td><td>' + data[i].created_time + '</td><td class="text-center"><button class="btn btn-primary me-2"  data-bs-toggle="modal" data-bs-target="#exampleModal" id="update_btn" data-id="' + data[i].id + '" data-p_name="' + data[i].name + '"  data-p_img="' + data[i].img + '"  data-p_info="' + data[i].information + '" data-p_price="' + data[i].price + '">修改</button><button class="btn btn-danger me-2" data-id="' + data[i].id + '" id="delete_my_btn">刪除</button></td></tr>';
+
+                    $("#show").append(str);
+                }
+            }
+
+            $("#logout").bind("click", function () {
+                setCookie("UID01", "", 7);
+                setCookie("UID02", "", 7);
+            });
+
+            $("#creat_btn").bind("click", function () {
+
+                $("#add_p_price").removeClass("is-invalid");
+
+            });
+
+            $("#show #update_btn").bind("click", function () {
+
+                $("#p_price").removeClass("is-invalid");
+                id = $(this).data("id");
+                var p_name = $(this).data("p_name");
+                var p_img = $(this).data("p_img");
+                var p_info = $(this).data("p_info");
+                var p_price = $(this).data("p_price");
+
+                $("#id").val(id);
+                $("#p_name").val(p_name);
+                $("#p_img").val(p_img);
+                $("#p_info").val(p_info);
+                $("#p_price").val(p_price);
+            });
+
+            $("#p_price").bind("input propertychange", function () {
+                let price = $("#p_price").val();
+
+                if (price < 1 || price > 100) {
+                    $("#p_price").removeClass("is-valid");
+                    $("#p_price").addClass("is-invalid")
+                    flag_price = false;
+                } else {
+                    $("#p_price").removeClass("is-invalid");
+                    $("#p_price").addClass("is-valid")
+                    flag_price = true;
+                }
+            });
+
+            $("#add_p_price").bind("input propertychange", function () {
+                let price = $("#add_p_price").val();
+
+                if (price < 1 || price > 100) {
+                    $("#add_p_price").removeClass("is-valid");
+                    $("#add_p_price").addClass("is-invalid")
+                    flag_price = false;
+                } else {
+                    $("#add_p_price").removeClass("is-invalid");
+                    $("#add_p_price").addClass("is-valid")
+                    flag_price = true;
+                }
+            });
+
+            $("#m_btn").bind("click", function () {
+
+                if (!flag_price) {
+                    alert("請確認欄位無誤");
+                    return;
+                }
+                var jsonData = {};
+                jsonData.id = id;
+                jsonData.name = $("#p_name").val();
+                jsonData.img = $("#p_img").val();
+                jsonData.information = $("#p_info").val();
+                jsonData.price = $("#p_price").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost/tea/Product/setProduct",
+                    data: JSON.stringify(jsonData),
+                    async: false,
+                    dataType: "json",
+                    success: update,
+                    error: function () {
+                        console.log("error-product-setProduct");
+                    }
+                });
+
+                function update(data) {
+                    if (data.state) {
+                        alert(data.message);
+                        location.href = "product_backend.html";
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            });
+
+            $("#m2_btn").bind("click", function () {
+
+                if (!flag_price) {
+                    alert("請確認欄位無誤");
+                    return;
+                }
+                var jsonData = {};
+                jsonData.name = $("#add_p_name").val();
+                jsonData.img = $("#add_p_img").val();
+                jsonData.information = $("#add_p_info").val();
+                jsonData.price = $("#add_p_price").val();
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost/tea/Product/add",
+                    data: JSON.stringify(jsonData),
+                    async: false,
+                    dataType: "json",
+                    success: create,
+                    error: function () {
+                        console.log("error-product-add");
+                    }
+                });
+
+                function create(data) {
+                    if (data.state) {
+                        alert(data.message);
+                        location.href = "product_backend.html";
+                    } else {
+                        alert(data.message);
+                    }
+                }
+
+            });
+
+            $("#show #delete_my_btn").bind("click", function () {
+                if (confirm("確定刪除?")) {
+                    var jsonData = {};
+
+                    jsonData.id = $(this).data("id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost/tea/Product/deleteById",
+                        data: JSON.stringify(jsonData),
+                        dataType: "json",
+                        async: false,
+                        success: product_delete,
+                        error: function () {
+                            console.log("error-Product-deleteById");
+                        }
+                    });
+                }
+
+                function product_delete(data) {
+
+                    alert(data.message);
+                    location.href = "product_backend.html";
+
+                }
+            })
+        }
+
+
+    });
+
+    function setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        let expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+</script>
+</body>
+
+</html>

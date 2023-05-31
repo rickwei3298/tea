@@ -1,0 +1,44 @@
+:root{
+    --color1: #F0BBC3 ;    --color13: #ED186B ;
+    --color2: #10A44A ;    --color14: #01ACBD ;
+    --color3: #FD8411;     --color18: #FFE246;
+    --color4: #877D7C; 
+
+    --color5: #D5D2C1 ;    
+    --color6: #BD8E62 ;    --color15: #FFFFFF ;
+    --color7: #A46843;     --color16: #000000;
+    --color8: #370D00;
+
+    --color9: #9BCFB8 ;
+    --color10: #7FB174 ;
+    --color11: #689C97;
+    --color12: #072A24;    --color17: #eeeee3 ;
+
+    
+}
+.bg-cover {
+    /* 背景填滿 */
+    background-size: cover;
+    /* 以原圖中心為基準 */
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+/* .box{
+    height: 180px;
+    background-color: var(--color10);
+    border: 3px solid var(--color3);
+    line-height: 180px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bolder;
+}
+.box2{
+    height: 100px;
+    width: 100px;
+    background-color: var(--color10);
+    border: 3px solid var(--color3);
+    line-height: 100px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bolder;
+} */

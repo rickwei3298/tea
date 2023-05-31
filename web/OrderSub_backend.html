@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單後台</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/配色.css">
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+<div class="container mt-3">
+    <section class="d-flex justify-content-end">
+        <span class="text-warning fs-3 fw-500 me-auto" id="login_member"></span>
+        <a href="tmpindex.html" class="btn btn-success m-2 my-auto" id="">首頁</a>
+        <a href="Member_back.html" class="btn btn-success m-2 my-auto" id="mem_backend">會員後台</a>
+        <a href="product_backend.html" class="btn btn-success m-2 my-auto" id="p_backend">產品後台</a>
+        <a href="" class="btn btn-success m-2 ms-2 my-auto" id="logout">登出</a>
+    </section>
+    <h1 class="text-info">客戶訂單總覽</h1>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+        <tr class="text-nowrap">
+            <td>訂單編號</td>
+            <td>名稱</td>
+            <td>數量</td>
+            <td>甜度</td>
+            <td>冰量</td>
+            <td>尺寸</td>
+            <td>總價</td>
+            <td>創建日期</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody id="show">
+        <!-- <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="text-center">
+                <button class="btn btn-danger" data-id="" id="delete_my_btn">刪除</button>
+            </td>
+        </tr> -->
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    $(function () {
+
+        if (getCookie("UID01") == "" && getCookie("UID02") == "") {
+
+            alert("您沒有權限，請登入");
+            location.href = "tmpindex.html";
+            return;
+        }
+
+        var jsonData = {};
+        jsonData.uid01 = getCookie("UID01");
+        jsonData.uid02 = getCookie("UID02");
+        $.ajax({
+            type: "POST",
+            url: "http://localhost/tea/Member/checkUid",
+            dataType: "json",
+            data: JSON.stringify(jsonData),
+            async: false,
+            success: uid_check,
+            error: function () {
+                alert("error-Member-checkUid");
+            }
+        });
+
+        function uid_check(data) {
+
+            if (!data.state || data.data.userType != 100) {
+
+                alert("您沒有權限，請登入");
+                location.href = "tmpindex.html";
+                return;
+
+            }
+
+            $("#login_member").text(data.data.username + "管理員您好!");
+
+            $.ajax({
+                type: "GET",
+                url: "http://localhost/tea/Order/selectAll",
+                dataType: "json",
+                async: false,
+                success: showdata,
+                error: function () {
+                    alert("error-Order-selectAll");
+                }
+            });
+
+            function showdata(data) {
+                if (data.state) {
+                    for (var i = 0; i < data.data.length; i++) {
+                        var str = '<tr><td>' + data.data[i].orderNo + '</td><td>' + data.data[i].name + '</td><td>' + data.data[i].num + '</td><td>' + data.data[i].sweet + '</td><td>' + data.data[i].temp + '</td><td>' + data.data[i].size + '</td><td>' + data.data[i].totalPrice + '</td><td>' + data.data[i].created_time + '</td><td class="text-center"><button class="btn btn-danger" data-id="' + data.data[i].id + '" id="delete_btn">刪除</button></td></tr>';
+
+                        $("#show").append(str);
+                    }
+                }
+            }
+
+            $("#logout").bind("click", function () {
+                setCookie("UID01", "", 7);
+                setCookie("UID02", "", 7);
+            });
+
+            $(" #delete_btn").bind("click", function () {
+                if (confirm("確定刪除?")) {
+                    var jsonData = {};
+                    jsonData.ID = $(this).data("id");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost/tea/Order/deleteById",
+                        data: JSON.stringify(jsonData),
+                        dataType: "json",
+                        async: false,
+                        success: OrderSub_delete,
+                        error: function () {
+                           alert("error-Order-deleteById");
+                        },
+                    });
+                }
+
+                function OrderSub_delete(data) {
+                    if (data.state) {
+                        alert(data.message);
+                        location.href = "OrderSub_backend.html";
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            })
+        }
+    });
+
+    function setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        let expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+</script>
+</body>
+
+</html>
